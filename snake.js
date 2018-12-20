@@ -1,9 +1,4 @@
 function Snake(board) {
-	let position = {
-		x: board.width / 2,
-		y: board.height / 2
-	}
-
 	function setupTail(tail, tailLength) {
 		for (var i = 0; i < tailLength; i++) {
 			tail.push(null);
@@ -85,13 +80,23 @@ function Snake(board) {
 		ctx.fillText(error, board.width / 6, board.height / 3);
 	}
 
+	// Width & height of each segment of the snake
 	const size = 10;
+	// Initial amt. of snake segments
+	const initialBodySize = 2;
+	// Travel direction
 	let direction = null;
-	let speed = 100;
+	// Amt. milliseconds for move interval
+	let speed = 70;
+	// Timer for movement
 	let timer = null;
-
-	let bodySize = 2;
-	let tail = setupTail([], bodySize);
+	// Current position of the snake's head
+	let position = {
+		x: board.width / 2,
+		y: board.height / 2
+	}
+	// The snake segments behind the head
+	let tail = setupTail([], initialBodySize);
 
 	return {
 		start: function () {
