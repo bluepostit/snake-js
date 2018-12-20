@@ -4,7 +4,18 @@ function Snake(board) {
 		y: board.height / 2
 	}
 
-	const size = 10;
+	function setupTail(tail, tailLength) {
+		for (var i = 0; i < tailLength; i++) {
+			tail.push(null);
+		}
+		return tail;
+	}
+
+	function growTail(size) {
+		for (var i = 0; i < size; i++) {
+			tail.unshift(null);
+		}
+	}
 
 	function isInsideBoard(x, y) {
 		if ((x < 0) || ((x + size) > board.width)) {
@@ -16,13 +27,35 @@ function Snake(board) {
 		return true;
 	}
 
+	function isInsideTail(x, y) {
+		for (var i = 0; i < tail.length; i++) {
+			var pos = tail[i];
+			if (pos != null) {
+				if ((pos.x == x) && (pos.y == y)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	function render() {
 		var ctx = board.getContext('2d');
 		ctx.clearRect(0, 0, board.width, board.height);
-		ctx.fillRect(position.x, position.y, size, size);
+		for (var i = 0; i < tail.length; i++) {
+			var pos = tail[i];
+			if (pos != null) {
+				if (i == (tail.length - 1)) {
+					ctx.fillStyle = 'blue';
+					ctx.fillRect(pos.x, pos.y, size, size);
+				}
+				ctx.strokeRect(pos.x, pos.y, size, size);
+			}
+		}
 	}
 
 	function move() {
+		tail.shift();
 		var newX = position.x;
 		var newY = position.y;
 		if (direction == 'left') {
@@ -36,15 +69,29 @@ function Snake(board) {
 		}
 		if (!isInsideBoard(newX, newY)) {
 			throw new Error("Crash!");
+		} else if (isInsideTail(newX, newY)) {
+			throw new Error("Crash!");
 		}
 		position.x = newX;
 		position.y = newY;
+		tail.push({x: position.x, y: position.y});
 		render();
 	}
 
+	function handleError(error) {
+		var ctx = board.getContext('2d');
+		ctx.font = '28px Courier New';
+		ctx.fillStyle = 'red';
+		ctx.fillText(error, board.width / 6, board.height / 3);
+	}
+
+	const size = 10;
 	let direction = null;
-	let speed = 200;
+	let speed = 100;
 	let timer = null;
+
+	let bodySize = 2;
+	let tail = setupTail([], bodySize);
 
 	return {
 		start: function () {
@@ -53,11 +100,14 @@ function Snake(board) {
 			timer = window.setInterval(function() {
 				try {
 					move();
+					if (direction == 'right') {
+						growTail(1);
+					}
 				} catch (error) {
 					if (!!timer) {
 						window.clearTimeout(timer);
 					}
-					throw error;
+					handleError(error);
 				}
 			}, speed);
 		},
