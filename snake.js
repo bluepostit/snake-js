@@ -152,10 +152,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	window.addEventListener('keydown', function(event) {
 		var code = event.keyCode;
 		if (code == 37) { // left
-			console.log('left');
 			snake.turnLeft();
 		} else if (code == 39) { // right
-			console.log('right');
 			snake.turnRight();
 		}
 	});
