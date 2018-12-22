@@ -80,6 +80,9 @@ function Snake(board) {
 		position.x = newX;
 		position.y = newY;
 		tail.push({x: position.x, y: position.y});
+		if (turning) {
+			turning = false;
+		}
 		render();
 	}
 
@@ -123,6 +126,8 @@ function Snake(board) {
 		x: board.width / 2,
 		y: board.height / 2
 	}
+	// Are we currently turning?
+	let turning = false;
 	// The snake segments behind the head
 	let tail = setupTail([], initialBodySize);
 
@@ -147,6 +152,10 @@ function Snake(board) {
 
 		},
 		turnLeft: function () {
+			if (turning) {
+				return false;
+			}
+			turning = true;
 			switch (direction) {
 				case 'left':
 					direction = 'down';
@@ -161,6 +170,10 @@ function Snake(board) {
 			}
 		},
 		turnRight: function () {
+			if (turning) {
+				return false;
+			}
+			turning = true;
 			switch (direction) {
 				case 'left':
 					direction = 'up';
