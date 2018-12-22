@@ -75,6 +75,7 @@ function Snake(board) {
 		}
 		if ((apple.x == newX) && (apple.y == newY)) {
 			growTail(1);
+			speed -= 5;
 			apple = newApplePosition();
 		}
 		position.x = newX;
@@ -115,6 +116,7 @@ function Snake(board) {
 	const SIZE = 10;
 	// Initial amt. of snake segments
 	const INITIAL_BODY_SIZE = 3;
+	const TIMER_INTERVAL = 5;
 	// Initial speed; amt. of milliseconds for move interval
 	const STARTING_SPEED = 100;
 	const DIRECTIONS = ['up', 'right', 'down', 'left'];
@@ -125,6 +127,8 @@ function Snake(board) {
 	let speed = null;
 	// Timer for movement
 	let timer = null;
+	// Timer tick counter
+	let tick = 0;
 	// Current position of the snake's head
 	let position = {
 		x: null,
@@ -158,6 +162,11 @@ function Snake(board) {
 			init();
 			render();
 			timer = window.setInterval(function() {
+				tick = ((tick * TIMER_INTERVAL) > speed) ? 0 : tick + 1;
+				// console.log('tick:', tick, 'speed:', speed)
+				if ((tick * TIMER_INTERVAL) != speed) {
+					return;
+				}
 				try {
 					move();
 				} catch (error) {
@@ -166,7 +175,7 @@ function Snake(board) {
 					}
 					handleError(error);
 				}
-			}, speed);
+			}, TIMER_INTERVAL);
 		},
 		stop: function () {
 
