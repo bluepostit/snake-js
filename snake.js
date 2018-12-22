@@ -117,6 +117,7 @@ function Snake(board) {
 	const INITIAL_BODY_SIZE = 3;
 	// Initial speed; amt. of milliseconds for move interval
 	const STARTING_SPEED = 100;
+	const DIRECTIONS = ['up', 'right', 'down', 'left'];
 
 	// Travel direction
 	let direction = null;
@@ -170,42 +171,15 @@ function Snake(board) {
 		stop: function () {
 
 		},
-		turnLeft: function () {
-			if (turning) {
-				return false;
+		turn: function (turnDirection) {
+			if (DIRECTIONS.includes(turnDirection)) {
+				if (turning) {
+					return false;
+				}
+				turning = true;
+				direction = turnDirection;
 			}
-			turning = true;
-			switch (direction) {
-				case 'left':
-					direction = 'down';
-					break;
-				case 'right':
-					direction = 'up';
-					break;
-				case 'down':
-				case 'up':
-					direction = 'left';
-					break;
-			}
-		},
-		turnRight: function () {
-			if (turning) {
-				return false;
-			}
-			turning = true;
-			switch (direction) {
-				case 'left':
-					direction = 'up';
-					break;
-				case 'right':
-					direction = 'down';
-					break;
-				case 'down':
-				case 'up':
-					direction = 'right';
-					break;
-			}
-		},
+		}
 	}
 }
 
@@ -216,9 +190,13 @@ document.addEventListener("DOMContentLoaded", function() {
 	window.addEventListener('keydown', function(event) {
 		var code = event.keyCode;
 		if (code == 37) { // left
-			snake.turnLeft();
+			snake.turn('left');
 		} else if (code == 39) { // right
-			snake.turnRight();
+			snake.turn('right');
+		} else if (code == 38) { // up
+			snake.turn('up');
+		} else if (code == 40) { // down
+			snake.turn('down');
 		} else if (code == 32) { // spacebar
 			snake.start();
 		}
