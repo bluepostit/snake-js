@@ -13,10 +13,10 @@ function Snake(board) {
 	}
 
 	function isInsideBoard(x, y) {
-		if ((x < 0) || ((x + size) > board.width)) {
+		if ((x < 0) || ((x + SIZE) > board.width)) {
 			return false;
 		}
-		if ((y < 0) || ((y + size) > board.height)) {
+		if ((y < 0) || ((y + SIZE) > board.height)) {
 			return false;
 		}
 		return true;
@@ -42,16 +42,16 @@ function Snake(board) {
 			if (pos != null) {
 				if (i == (tail.length - 1)) {
 					ctx.fillStyle = 'blue';
-					ctx.fillRect(pos.x, pos.y, size, size);
+					ctx.fillRect(pos.x, pos.y, SIZE, SIZE);
 				}
-				ctx.strokeRect(pos.x, pos.y, size, size);
+				ctx.strokeRect(pos.x, pos.y, SIZE, SIZE);
 			}
 		}
 		// render apple
 		ctx.fillStyle = 'red';
 		ctx.beginPath();
-		ctx.arc(apple.x + (size / 2), apple.y + (size / 2),
-			size / 2, 0, (Math.PI * 2));
+		ctx.arc(apple.x + (SIZE / 2), apple.y + (SIZE / 2),
+			SIZE / 2, 0, (Math.PI * 2));
 		ctx.fill();
 	}
 
@@ -60,13 +60,13 @@ function Snake(board) {
 		var newX = position.x;
 		var newY = position.y;
 		if (direction == 'left') {
-			newX = position.x - size;
+			newX = position.x - SIZE;
 		} else if (direction == 'right') {
-			newX = position.x + size;
+			newX = position.x + SIZE;
 		} else if (direction == 'up') {
-			newY = position.y - size;
+			newY = position.y - SIZE;
 		} else if (direction == 'down') {
-			newY = position.y + size;
+			newY = position.y + SIZE;
 		}
 		if (!isInsideBoard(newX, newY)) {
 			throw new Error("Crash!");
@@ -95,8 +95,8 @@ function Snake(board) {
 
 	function newApplePosition() {
 		do {
-			var x = getRandomInt(0, board.width / size) * size;
-			var y = getRandomInt(0, board.height / size) * size;
+			var x = getRandomInt(0, board.width / SIZE) * SIZE;
+			var y = getRandomInt(0, board.height / SIZE) * SIZE;
 		} while (isInsideTail(x, y));
 		return {
 			x: x,
@@ -112,31 +112,50 @@ function Snake(board) {
 	}
 
 	// Width & height of each segment of the snake
-	const size = 10;
+	const SIZE = 10;
 	// Initial amt. of snake segments
-	const initialBodySize = 3;
+	const INITIAL_BODY_SIZE = 3;
+	// Initial speed; amt. of milliseconds for move interval
+	const STARTING_SPEED = 100;
+
 	// Travel direction
 	let direction = null;
 	// Amt. milliseconds for move interval
-	let speed = 100;
+	let speed = null;
 	// Timer for movement
 	let timer = null;
 	// Current position of the snake's head
 	let position = {
-		x: board.width / 2,
-		y: board.height / 2
+		x: null,
+		y: null
 	}
 	// Are we currently turning?
 	let turning = false;
 	// The snake segments behind the head
-	let tail = setupTail([], initialBodySize);
+	let tail = []
+	// The apple's position
+	let apple = null;
 
-	let apple = newApplePosition();
+	function init() {
+		direction = 'right';
+		speed = STARTING_SPEED;
+		if (!!timer) {
+			window.clearTimeout(timer);
+			timer = null;
+		}
+		position = {
+			x: board.width / 2,
+			y: board.height / 2
+		}
+		turning = false;
+		tail = setupTail([], INITIAL_BODY_SIZE);
+		apple = newApplePosition();
+	}
 
 	return {
 		start: function () {
+			init();
 			render();
-			direction = 'right';
 			timer = window.setInterval(function() {
 				try {
 					move();
@@ -200,6 +219,8 @@ document.addEventListener("DOMContentLoaded", function() {
 			snake.turnLeft();
 		} else if (code == 39) { // right
 			snake.turnRight();
+		} else if (code == 32) { // spacebar
+			snake.start();
 		}
 	});
 
