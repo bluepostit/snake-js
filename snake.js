@@ -34,6 +34,14 @@ function Snake(board) {
 		return false;
 	}
 
+	function renderApple(ctx) {
+		ctx.fillStyle = 'red';
+		ctx.beginPath();
+		ctx.arc(apple.x + (SIZE / 2), apple.y + (SIZE / 2),
+			SIZE / 2, 0, (Math.PI * 2));
+		ctx.fill();
+	}
+
 	function renderEyes(ctx, x, y, fillStyle) {
 		ctx.fillStyle = fillStyle;
 		let radius = SIZE / 8;
@@ -92,12 +100,7 @@ function Snake(board) {
 				}
 			}
 		}
-		// render apple
-		ctx.fillStyle = 'red';
-		ctx.beginPath();
-		ctx.arc(apple.x + (SIZE / 2), apple.y + (SIZE / 2),
-			SIZE / 2, 0, (Math.PI * 2));
-		ctx.fill();
+		renderApple(ctx);
 	}
 
 	function move() {
