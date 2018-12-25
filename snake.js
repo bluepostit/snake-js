@@ -35,11 +35,9 @@ function Snake(board) {
 	}
 
 	function renderApple(ctx) {
-		ctx.fillStyle = 'red';
-		ctx.beginPath();
-		ctx.arc(apple.x + (SIZE / 2), apple.y + (SIZE / 2),
-			SIZE / 2, 0, (Math.PI * 2));
-		ctx.fill();
+		let img = new Image(SIZE, SIZE);
+		img.src = "apple.png";
+		ctx.drawImage(img, apple.x, apple.y, SIZE, SIZE);
 	}
 
 	function renderEyes(ctx, x, y, fillStyle) {
