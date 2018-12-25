@@ -230,6 +230,12 @@ function Snake(board) {
 				if (turning) {
 					return false;
 				}
+				// Don't allow 180 degree turns
+				let dirs = [direction, turnDirection].sort();
+				if ((dirs[0] == 'left' && dirs[1] == 'right') ||
+						(dirs[0] == 'down' && dirs[1] == 'up')) {
+					return false;
+				}
 				turning = true;
 				direction = turnDirection;
 			}
