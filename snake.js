@@ -34,17 +34,62 @@ function Snake(board) {
 		return false;
 	}
 
+	function renderEyes(ctx, x, y, fillStyle) {
+		ctx.fillStyle = fillStyle;
+		let radius = SIZE / 8;
+		let startAngle = 0;
+		let endAngle = Math.PI * 2;
+
+		let eye1 = { x: x, y: y };
+		let eye2 = { x: x, y: y };
+
+		if (direction == 'right' || direction == 'left') {
+			eye1.y = y + (SIZE * 1/4);
+			eye2.y = y + (SIZE * 3/4);
+			eye1.x = eye2.x = (x + (SIZE * 3/4));
+			if (direction == 'left') {
+				eye1.x = eye2.x = (x + (SIZE * 1/4));
+			}
+		} else if (direction == 'up' || direction == 'down') {
+			eye1.x = x + (SIZE * 1/4);
+			eye2.x = x + (SIZE * 3/4);
+			eye1.y = eye2.y = (y + (SIZE * 1/4));
+			if (direction == 'down') {
+				eye1.y = eye2.y = (y + (SIZE * 3/4));
+			}
+		}
+		// eye 1
+		ctx.beginPath();
+		ctx.arc(eye1.x,
+			eye1.y,
+			radius,
+			startAngle, 
+			endAngle);
+		ctx.fill();
+		// eye 2
+		ctx.beginPath();
+		ctx.arc(eye2.x,
+			eye2.y,
+			radius,
+			startAngle, 
+			endAngle);
+		ctx.fill();
+	}
+
 	function render() {
 		var ctx = board.getContext('2d');
+		ctx.fillStyle = 'black';
 		ctx.clearRect(0, 0, board.width, board.height);
+		ctx.fillRect(0, 0, board.width, board.height);
 		for (var i = 0; i < tail.length; i++) {
 			var pos = tail[i];
 			if (pos != null) {
+				ctx.fillStyle = '#01B600';
+				ctx.fillRect(pos.x, pos.y, SIZE, SIZE);
+				// It's the head
 				if (i == (tail.length - 1)) {
-					ctx.fillStyle = 'blue';
-					ctx.fillRect(pos.x, pos.y, SIZE, SIZE);
+					renderEyes(ctx, pos.x, pos.y, '#005497');
 				}
-				ctx.strokeRect(pos.x, pos.y, SIZE, SIZE);
 			}
 		}
 		// render apple
@@ -113,7 +158,7 @@ function Snake(board) {
 	}
 
 	// Width & height of each segment of the snake
-	const SIZE = 10;
+	const SIZE = 20;
 	// Initial amt. of snake segments
 	const INITIAL_BODY_SIZE = 3;
 	const TIMER_INTERVAL = 5;
@@ -194,7 +239,7 @@ function Snake(board) {
 
 document.addEventListener("DOMContentLoaded", function() {
 	var board = document.getElementById('board');
-	snake = new Snake(board);
+	var snake = new Snake(board);
 	
 	window.addEventListener('keydown', function(event) {
 		var code = event.keyCode;
@@ -214,3 +259,15 @@ document.addEventListener("DOMContentLoaded", function() {
 	snake.start();
 });
 
+// function drawRoundedSquare(x, y, size) {
+// 	var board = document.getElementById('board');
+// 	var ctx = board.getContext('2d');
+// 	ctx.clearRect(0, 0, board.width, board.height);
+
+// 	ctx.beginPath();
+// 	ctx.arc(x + (size / 2), y + (size / 2), size / 2, Math.PI / 180 * 0, Math.PI / 180 * 360);
+// 	ctx.stroke();
+
+// 	ctx.strokeStyle = 'red';
+// 	ctx.strokeRect(x, y, size, size);
+// }
